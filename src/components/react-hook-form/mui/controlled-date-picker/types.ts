@@ -14,4 +14,6 @@ export type ControlledDatePickerProps<T extends FieldValues> = {
   datePickerProps?: DatePickerProps<Dayjs>;
   form?: UseFormReturn<any>;
   textFieldProps?: TextFieldProps;
+  required?: boolean;
+  label: string;
 };

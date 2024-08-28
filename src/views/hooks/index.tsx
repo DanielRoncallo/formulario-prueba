@@ -1,8 +1,8 @@
- 
+
 import { useForm } from "react-hook-form";
-import {getCarros, getTipoIdentificacion} from "@/http/autocompleteData"
+import { getCarros, getTipoIdentificacion } from "@/http/autocompleteData"
 import { useQuery } from "@tanstack/react-query";
-import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import useDebounce from "@/core/hooks/useDebounce";
 import { NumericFormat, NumericFormatProps } from 'react-number-format';
 
@@ -18,17 +18,18 @@ export const useHome = () => {
 
 
   type FormularioType = {
-    colorOpcion: number, 
+    colorOpcion: number,
     tipodIdentificacion: number,
     carroId: number,
     valorFactura: string,
     observacion: string,
     blindado: boolean | undefined,
-    metodoPagoId: number, 
+    fechaPago: Date,
+    metodoPagoId: number,
   };
-      
+
   const formularioUseForm = useForm<FormularioType>({
-    defaultValues: { 
+    defaultValues: {
       valorFactura: "",
       observacion: "",
       blindado: false,
@@ -49,34 +50,38 @@ export const useHome = () => {
     enabled: !!inputValueCarroDebounce
   });
 
-  const handleChangeCarro = (value: string) => {
-    setInputValueCarro(value) 
+  const handleChangeCarro = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setInputValueCarro(e.target.value)
   }
 
   const formularioHandleSubmit = formularioUseForm?.handleSubmit;
   const formularioHandleReset = formularioUseForm?.reset;
 
   const handleSubmit = formularioHandleSubmit &&
-  formularioHandleSubmit((formData) =>  console.log("formData", formData));
- 
-  const handleReset = () =>{ formularioHandleReset && 
-  formularioHandleReset()}
+    formularioHandleSubmit((formData) => { 
+      const dataFormatted = {
+        ...formData,
+        fechaPago: formData.fechaPago.toISOString()
+      }
+      console.log("formData", dataFormatted) });
+
+  const handleReset = () => {
+    formularioHandleReset &&
+      formularioHandleReset()
+  }
 
   useEffect(() => {
     setOptionsCarro(carros)
   }, [carros])
 
-  console.log(formularioUseForm.formState.errors);
-  
-  
- return {
-    formularioUseForm, 
+  return {
+    formularioUseForm,
     tiposIdentificacion,
     handleChangeCarro,
     optionsCarro,
     handleSubmit,
     handleReset,
   }
-  
+
 }
- 
+

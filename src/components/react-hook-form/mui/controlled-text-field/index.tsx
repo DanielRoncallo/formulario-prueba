@@ -7,7 +7,7 @@ import {
   Fragment,
 } from "react";
 import { Controller, FieldValues, Noop } from "react-hook-form";
-import { FormHelperText, TextField } from "@mui/material";
+import { FormControl, FormHelperText, TextField } from "@mui/material";
 
 import { ControlledTextFieldProps } from "./types";
 import { NumericFormatProps, NumericFormat } from "react-number-format";
@@ -20,7 +20,7 @@ interface CustomProps {
 const ControlledTextField = <T extends FieldValues>(
   props: ControlledTextFieldProps<T>,
 ) => {
-  const { name, rules, textFieldProps, form, regExp, typeNumericMask } = props;
+  const { name, required, textFieldProps, form, regExp, typeNumericMask, label } = props;
 
   const control = form?.control;
   const error = form?.formState?.errors[name];
@@ -50,9 +50,9 @@ const ControlledTextField = <T extends FieldValues>(
     textFieldOnBlur && textFieldOnBlur(e);
   };
 
-  const NumericFormatCustom =  forwardRef<NumericFormatProps, CustomProps>((props, ref) => {
+  const NumericFormatCustom = forwardRef<NumericFormatProps, CustomProps>((props, ref) => {
     const { onChange, ...other } = props;
-  
+
     return (
       <NumericFormat
         {...other}
@@ -73,33 +73,36 @@ const ControlledTextField = <T extends FieldValues>(
   });
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      rules={rules}
-      render={({ field: { value, onChange, onBlur } }) => (
-        <Fragment>
-          <TextField            
-            value={value ?? ""}
-            onBlur={(e) => customOnBlur(e, onBlur, textFieldProps?.onBlur)}
-            onChange={(e) =>
-              customOnChange(e, onChange, textFieldProps?.onChange)
-            }
-            error={Boolean(error)}
-            size="small"
-            {...textFieldProps}
-            InputProps={{
-              inputComponent: typeNumericMask ? NumericFormatCustom as any : null,
-            }}
-          />
-          {error && (
-            <FormHelperText sx={{ color: "error.main" }}>
-              {error.message as unknown as string}
-            </FormHelperText>
-          )}
-        </Fragment>
-      )}
-    />
+    <FormControl fullWidth>
+      <Controller
+        name={name}
+        control={control}
+        rules={{ required: required }}
+        render={({ field: { value, onChange, onBlur } }) => (
+          <Fragment>
+            <TextField
+              value={value ?? ""}
+              label={label}
+              onBlur={(e) => customOnBlur(e, onBlur, textFieldProps?.onBlur)}
+              onChange={(e) =>
+                customOnChange(e, onChange, textFieldProps?.onChange)
+              }
+              error={Boolean(error)}
+              size="small"
+              {...textFieldProps}
+              InputProps={{
+                inputComponent: typeNumericMask ? NumericFormatCustom as any : null,
+              }}
+            />
+            {error && (
+              <FormHelperText sx={{ color: "error.main" }}>
+                {error.message as unknown as string}
+              </FormHelperText>
+            )}
+          </Fragment>
+        )}
+      />
+    </FormControl>
   );
 };
 

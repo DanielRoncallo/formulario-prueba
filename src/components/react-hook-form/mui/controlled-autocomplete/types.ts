@@ -1,3 +1,4 @@
+import { ChangeEvent } from "react";
 import {
   FieldValues,
   Path,
@@ -8,15 +9,18 @@ import { AutocompleteProps, TextFieldProps } from "@mui/material";
 
 export type ControlledAutocompleteProps<T extends FieldValues> = {
   name: Path<T>;
-  rules?: RegisterOptions<T>;
-  autocompleteProps: AutocompleteProps<
+  required?: boolean;
+  autocompleteProps?: AutocompleteProps<
     ControlledAutocompleteOption,
     false,
     false,
     false
   >;
+  options: ControlledAutocompleteOption[];
+  label: string;
   form?: UseFormReturn<any>;
   textFieldProps?: TextFieldProps;
+  handleOnChange?: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
 };
 
 export type ControlledAutocompleteOption = {

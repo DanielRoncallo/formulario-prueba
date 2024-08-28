@@ -13,4 +13,6 @@ export type ControlledTextFieldProps<T extends FieldValues> = {
   textFieldProps?: TextFieldProps;
   regExp?: RegExp;
   typeNumericMask?: boolean;
+  required?: boolean;
+  label: string;
 };
